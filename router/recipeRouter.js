@@ -1,15 +1,18 @@
 const { getAllRecipes, createRecipe, getById, updateById, deleteById } = require('../controllers/recipeController');
 
-const {authenticateToken} = require('../middlewares/auth');
+const {isUser} = require('../middlewares/auth');
 
 const router = require('express').Router();
 
-router.get('/recipes', authenticateToken, async (req, res) => {
+router.get('/recipes', isUser, async (req, res) => {
+
     const result = await getAllRecipes();
-    res.status(200).json(result);
+
+    console.log(result)
+    res.status(200).json({result});
 });
 
-router.post('/recipes', authenticateToken, async (req, res) => {
+router.post('/recipes', isUser, async (req, res) => {
     const data = {
         name: req.body.name, 
         dishType: req.body.dishType, 
@@ -26,15 +29,16 @@ router.post('/recipes', authenticateToken, async (req, res) => {
 
 });
 
-router.get('/recipes/:id', authenticateToken, async (req, res) => {
+router.get('/recipes/:id', isUser, async (req, res) => {
     const id = req.params.id;
     const result = await getById(id);
     res.status(200).json(result);
 });
 
-router.put('/recipes/:id', authenticateToken, async (req, res) => {
+router.put('/recipes/:id', isUser, async (req, res) => {
 
     const id = req.params.id;
+
 
     const data = {
         name: req.body.name, 
@@ -52,7 +56,7 @@ router.put('/recipes/:id', authenticateToken, async (req, res) => {
     res.status(201).json(result);
 });
 
-router.delete('/recipes/:id', authenticateToken, async (req, res) => {
+router.delete('/recipes/:id', isUser, async (req, res) => {
     const id = req.params.id;
 
     await deleteById(id);

@@ -1,9 +1,9 @@
 const { register, login } = require('../controllers/userController');
-const { generateAccessToken } = require('../middlewares/auth');
+const { generateAccessToken, isGuest, isUser } = require('../middlewares/auth');
 
 const router = require('express').Router();
 
-router.post('/users/register', async (req, res) => {
+router.post('/users/register', isGuest, async (req, res) => {
 
     try {
         if (req.body.password != req.body.repass) {
@@ -43,7 +43,7 @@ router.post('/users/register', async (req, res) => {
     
 });
 
-router.post('/users/login', async (req, res) => {
+router.post('/users/login', isGuest, async (req, res) => {
     try {
         const user = await login(req.body.email, req.body.password);
         const token = generateAccessToken(req.body.email, user.firstName, user.lastName, user.gender);
@@ -57,6 +57,16 @@ router.post('/users/login', async (req, res) => {
         .json({ message: "Logged in Successfully", user, token });
     } catch (err) {
         console.log(err);
+    }
+});
+
+router.get('/users/logout', isUser, (req, res) => {
+    try {
+        return res.clearCookie("access_token")
+        .status(200)
+        .json({ message: 'Successfully logged out.' });
+    } catch (err) {
+        console.log(err)
     }
 })
 
