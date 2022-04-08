@@ -2,12 +2,12 @@ const { getAllRecipes, createRecipe, getById, updateById, deleteById } = require
 
 const router = require('express').Router();
 
-router.get('/recipes/', async (req, res) => {
+router.get('/recipes', async (req, res) => {
     const result = await getAllRecipes();
     res.status(200).json(result);
 });
 
-router.post('/recipes/', async (req, res) => {
+router.post('/recipes', async (req, res) => {
     const data = {
         name: req.body.name, 
         dishType: req.body.dishType, 

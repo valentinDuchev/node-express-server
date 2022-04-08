@@ -1,11 +1,12 @@
 const express = require('express');
-const corsMiddleware = require('./config/cors');
+const corsMiddleware = require('./middlewares/cors');
 
 require('dotenv').config();
 
 const databaseConfig = require('./config/database');
 
-const recipeController = require('./router/recipeRouter')
+const recipeController = require('./router/recipeRouter');
+const userController = require('./router/userRouter')
 
 start();
 
@@ -19,6 +20,7 @@ async function start() {
     app.use(corsMiddleware);
 
     app.use('/api', recipeController);
+    app.use('/api', userController);
 
     app.get('/', (req, res) => {
         res.json({ message: 'It works' })
