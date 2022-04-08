@@ -4,7 +4,9 @@ const secret = process.env.SECRET;
 
 function authenticateToken (req, res, next) {
     const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
+    const token = authHeader;
+
+    console.log(token)
 
     if (token == null) {
         return res.status(401).send('Access Denied');
@@ -20,8 +22,8 @@ function authenticateToken (req, res, next) {
     })
 }
 
-function generateAccessToken (email) {
-    return jwt.sign({ data: email }, secret, {
+function generateAccessToken (email, firstName, lastName, gender) {
+    return jwt.sign({ email, firstName, lastName, gender }, secret, {
         expiresIn: "1h"
     });
 }

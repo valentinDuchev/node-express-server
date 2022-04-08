@@ -26,12 +26,17 @@ router.post('/users/register', async (req, res) => {
 
         const user = await register(reqData);
 
-        const token = generateAccessToken(req.body.email);
+        const token = generateAccessToken(req.body.email, user.firstName, user.lastName, user.gender);
 
         
-        res.header('authorization', token);
+        return res.cookie("access_token", token, {
+            httpOnly: true, 
+            // secure: process.env.NODE_ENV === "production"
+        })
+        
+        .status(200)
+        .json({ message: "Registered in Successfully", user, token });
 
-        res.json ({ message: 'Registered successfully', user: user, token: token});
     } catch (err) {
         console.log(err);
     }
@@ -41,10 +46,15 @@ router.post('/users/register', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await login(req.body.email, req.body.password);
-        const token = generateAccessToken(req.body.email);
-        res.header('authorization', token);
+        const token = generateAccessToken(req.body.email, user.firstName, user.lastName, user.gender);
 
-        res.json({ message: 'Logged in successfully', user: user, token: token })
+        return res.cookie("access_token", token, {
+            httpOnly: true, 
+            // secure: process.env.NODE_ENV === "production"
+        })
+        
+        .status(200)
+        .json({ message: "Logged in Successfully", user, token });
     } catch (err) {
         console.log(err);
     }
